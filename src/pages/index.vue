@@ -16,18 +16,22 @@ const todos = useStorage<Todo[]>('todos-vitesse', [])
 const filter = ref<'all' | 'active' | 'done'>('all')
 
 const filteredTodos = computed(() => {
-  if (filter.value === 'active') return todos.value.filter(t => !t.done)
-  if (filter.value === 'done') return todos.value.filter(t => t.done)
+  if (filter.value === 'active')
+    return todos.value.filter(t => !t.done)
+  if (filter.value === 'done')
+    return todos.value.filter(t => t.done)
   return todos.value
 })
 
 const progress = computed(() => {
-  if (!todos.value.length) return 0
+  if (!todos.value.length)
+    return 0
   return Math.round((todos.value.filter(t => t.done).length / todos.value.length) * 100)
 })
 
 function addTodo() {
-  if (!newTodo.value.trim()) return
+  if (!newTodo.value.trim())
+    return
   todos.value.push({ id: Date.now(), text: newTodo.value.trim(), done: false })
   newTodo.value = ''
 }
@@ -42,29 +46,29 @@ function toggleTodo(todo: Todo) {
 </script>
 
 <template>
-  <div class="min-h-screen w-full flex items-start justify-center pt-12 pb-24 px-4">
-    <div class="w-full max-w-md">
+  <div class="px-4 pb-24 pt-12 flex min-h-screen w-full items-start justify-center">
+    <div class="max-w-md w-full">
       <!-- Header -->
       <div class="mb-6">
-        <div class="flex items-center gap-3 mb-1">
-          <div i-carbon-checkbox-checked-filled class="text-violet-600 dark:text-violet-400 text-2xl" />
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+        <div class="mb-1 flex gap-3 items-center">
+          <div i-carbon-checkbox-checked-filled class="text-2xl text-violet-600 dark:text-violet-400" />
+          <h1 class="text-2xl text-gray-900 tracking-tight font-bold dark:text-white">
             My Tasks
           </h1>
         </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 pl-9">
+        <p class="text-sm text-gray-500 pl-9 dark:text-gray-400">
           {{ todos.filter(t => !t.done).length }} remaining · {{ todos.filter(t => t.done).length }} completed
         </p>
 
         <!-- Progress bar -->
         <div v-if="todos.length" class="mt-4 pl-9">
-          <div class="flex justify-between text-xs text-gray-400 dark:text-gray-500 mb-1.5">
+          <div class="text-xs text-gray-400 mb-1.5 flex justify-between dark:text-gray-500">
             <span>Progress</span>
-            <span class="font-medium text-violet-600 dark:text-violet-400">{{ progress }}%</span>
+            <span class="text-violet-600 font-medium dark:text-violet-400">{{ progress }}%</span>
           </div>
-          <div class="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div class="rounded-full bg-gray-200 h-1.5 overflow-hidden dark:bg-gray-700">
             <div
-              class="h-full bg-violet-500 rounded-full transition-all duration-700 ease-out"
+              class="rounded-full bg-violet-500 h-full transition-all duration-700 ease-out"
               :style="{ width: `${progress}%` }"
             />
           </div>
@@ -72,7 +76,7 @@ function toggleTodo(todo: Todo) {
       </div>
 
       <!-- Main Card -->
-      <div class="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+      <div class="border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden dark:border-gray-700 dark:bg-gray-900">
         <!-- Input -->
         <div class="p-4 border-b border-gray-100 dark:border-gray-800">
           <div class="flex gap-2">
@@ -80,11 +84,11 @@ function toggleTodo(todo: Todo) {
               v-model="newTodo"
               type="text"
               placeholder="What needs to be done?"
-              class="flex-1 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-xl px-4 py-2.5 text-sm outline-none border border-gray-200 dark:border-gray-700 focus:border-violet-500 dark:focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all duration-200"
+              class="text-sm text-gray-900 px-4 py-2.5 outline-none border border-gray-200 rounded-xl bg-gray-50 flex-1 transition-all duration-200 dark:text-gray-100 dark:border-gray-700 focus:border-violet-500 dark:bg-gray-800 focus:ring-2 focus:ring-violet-500/20 dark:focus:border-violet-500 placeholder-gray-400 dark:placeholder-gray-500"
               @keydown.enter="addTodo"
             >
             <button
-              class="bg-violet-600 hover:bg-violet-700 active:scale-95 text-white rounded-xl px-4 py-2.5 text-sm font-semibold flex items-center gap-1.5 transition-all duration-150 whitespace-nowrap"
+              class="text-sm text-white font-semibold px-4 py-2.5 rounded-xl bg-violet-600 flex gap-1.5 whitespace-nowrap transition-all duration-150 items-center hover:bg-violet-700 active:scale-95"
               @click="addTodo"
             >
               <div i-carbon-add class="text-base" />
@@ -94,11 +98,11 @@ function toggleTodo(todo: Todo) {
         </div>
 
         <!-- Filter Tabs -->
-        <div v-if="todos.length" class="flex border-b border-gray-100 dark:border-gray-800">
+        <div v-if="todos.length" class="border-b border-gray-100 flex dark:border-gray-800">
           <button
             v-for="tab in (['all', 'active', 'done'] as const)"
             :key="tab"
-            class="flex-1 py-2.5 text-xs font-semibold tracking-wide uppercase transition-all duration-150"
+            class="text-xs tracking-wide font-semibold py-2.5 flex-1 uppercase transition-all duration-150"
             :class="filter === tab
               ? 'text-violet-600 dark:text-violet-400 border-b-2 border-violet-500 bg-violet-50 dark:bg-violet-950/30'
               : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/50'"
@@ -109,9 +113,9 @@ function toggleTodo(todo: Todo) {
         </div>
 
         <!-- Todo List -->
-        <div class="divide-y divide-gray-100 dark:divide-gray-800 max-h-96 overflow-y-auto">
+        <div class="max-h-96 overflow-y-auto divide-gray-100 divide-y dark:divide-gray-800">
           <!-- Empty state -->
-          <div v-if="filteredTodos.length === 0" class="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-600">
+          <div v-if="filteredTodos.length === 0" class="text-gray-400 py-12 flex flex-col items-center justify-center dark:text-gray-600">
             <div i-carbon-face-satisfied class="text-3xl mb-2" />
             <p class="text-sm">
               {{ filter === 'all' ? 'No tasks yet. Enjoy your day!' : `No ${filter} tasks.` }}
@@ -121,22 +125,22 @@ function toggleTodo(todo: Todo) {
           <div
             v-for="todo in filteredTodos"
             :key="todo.id"
-            class="group flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
+            class="group px-4 py-3.5 flex gap-3 transition-colors duration-100 items-center hover:bg-gray-50 dark:hover:bg-gray-800/50"
           >
             <!-- Checkbox -->
             <button
-              class="flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200"
+              class="border-2 rounded-full flex flex-shrink-0 h-5 w-5 transition-all duration-200 items-center justify-center"
               :class="todo.done
                 ? 'bg-violet-500 border-violet-500'
                 : 'border-gray-300 dark:border-gray-600 hover:border-violet-400 dark:hover:border-violet-500'"
               @click="toggleTodo(todo)"
             >
-              <div v-if="todo.done" i-carbon-checkmark class="text-white text-xs" />
+              <div v-if="todo.done" i-carbon-checkmark class="text-xs text-white" />
             </button>
 
             <!-- Text -->
             <span
-              class="flex-1 text-sm text-left break-all leading-relaxed transition-all duration-200"
+              class="text-sm leading-relaxed text-left flex-1 break-all transition-all duration-200"
               :class="todo.done ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-gray-100'"
             >
               {{ todo.text }}
@@ -144,7 +148,7 @@ function toggleTodo(todo: Todo) {
 
             <!-- Delete -->
             <button
-              class="opacity-0 group-hover:opacity-100 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 p-1 rounded-lg transition-all duration-150"
+              class="text-gray-400 p-1 rounded-lg opacity-0 transition-all duration-150 dark:text-gray-500 hover:text-red-500 group-hover:opacity-100 dark:hover:text-red-400"
               @click="removeTodo(todo)"
             >
               <div i-carbon-trash-can class="text-base" />
@@ -153,13 +157,13 @@ function toggleTodo(todo: Todo) {
         </div>
 
         <!-- Footer -->
-        <div v-if="todos.length" class="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/40 border-t border-gray-100 dark:border-gray-800">
+        <div v-if="todos.length" class="px-4 py-3 border-t border-gray-100 bg-gray-50 flex items-center justify-between dark:border-gray-800 dark:bg-gray-800/40">
           <span class="text-xs text-gray-500 dark:text-gray-400">
             {{ todos.filter(t => !t.done).length }} item{{ todos.filter(t => !t.done).length !== 1 ? 's' : '' }} left
           </span>
           <button
             v-if="todos.some(t => t.done)"
-            class="text-xs text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 font-medium transition-colors duration-150"
+            class="text-xs text-gray-500 font-medium transition-colors duration-150 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400"
             @click="todos = todos.filter(t => !t.done)"
           >
             Clear completed
